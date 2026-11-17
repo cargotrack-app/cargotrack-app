@@ -1,0 +1,26 @@
+name: Sync latest tarball
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy v144 tarball to latest
+        run: cp ct_app_v144.tar.gz ct_app_latest.tar.gz
+      - name: Verify copy
+        run: |
+          ls -l ct_app_v144.tar.gz ct_app_latest.tar.gz
+          cmp ct_app_v144.tar.gz ct_app_latest.tar.gz
+      - name: Commit latest tarball
+        run: |
+          git config user.name "cargotrack-app"
+          git config user.email "cargotrack-app@users.noreply.github.com"
+          git add ct_app_latest.tar.gz
+          git commit -m "v144"
+          git push
